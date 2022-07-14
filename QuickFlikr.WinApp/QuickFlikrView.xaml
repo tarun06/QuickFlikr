@@ -31,11 +31,17 @@
                     VerticalAlignment="Center" Content="&#x1F50E;" HorizontalAlignment="Center"
                     Command="{Binding SearchCommand}" CommandParameter="{Binding ElementName=SearchTxtBox, Path=Text}"/>
         </StackPanel>
-     
 
         <ProgressBar Grid.Row="1" 
                      Visibility="{Binding IsVisible, Converter={StaticResource boolToVisibilityConverter}}" 
                      Width="250" Height="10" IsIndeterminate="True"/>
+
+        <TextBlock Grid.Row="1" 
+                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                   FontSize="25" FontWeight="Bold"
+                   Text="Oops... No photo found." 
+                   Visibility="{Binding DidFoundPhotos, Converter={StaticResource boolToVisibilityConverter}}"/>
+        
         <ItemsControl x:Name="ItemController" Grid.Row="1" ItemsSource="{Binding Photos}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>

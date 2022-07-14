@@ -91,5 +91,16 @@ namespace QuickFlikr.Tests
                 return Task.CompletedTask;
             });
         }
+
+        [Fact]
+        public void Should_ThrowException_WhenServiceNull()
+        {
+            // Asserts
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                var vm = new QuickFlikrViewModel(null);
+                return vm;
+            });
+        }
     }
 }

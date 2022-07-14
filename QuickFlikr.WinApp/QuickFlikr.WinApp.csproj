@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\QuickFlikr.Resources\QuickFlikr.Resources.csproj" />
     <ProjectReference Include="..\QuickFlikr.Service\QuickFlikr.Service.csproj" />
   </ItemGroup>
 

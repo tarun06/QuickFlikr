@@ -1,11 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using QuickFlikr.Resources;
 using QuickFlikr.Service;
 using Serilog;
 using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace QuickFlikr.WinApp
@@ -18,6 +19,7 @@ namespace QuickFlikr.WinApp
         private IFlickrFeedService _flickerFeedService;
         private bool _isVisible;
         private ObservableCollection<string> _photos = new ObservableCollection<string>();
+        private bool _didFoundPhotos = false;
 
         #endregion Private Field
 
@@ -35,11 +37,11 @@ namespace QuickFlikr.WinApp
             // clear photos from Ui
             Photos.Clear();
 
-            if (string.IsNullOrEmpty(searchText))  return;
+            if (string.IsNullOrEmpty(searchText)) return;
             try
             {
                 IsVisible = true;
-
+                DidFoundPhotos = false;
                 // Cancellation is created to cancel old task if enter is pressed muliple times
                 _cancellationTokenSource.Cancel();
                 _cancellationTokenSource = new CancellationTokenSource();
@@ -57,33 +59,28 @@ namespace QuickFlikr.WinApp
             finally
             {
                 IsVisible = false;
+                DidFoundPhotos = !Photos.Any();
             }
         }
+
         #endregion Methods
 
         #region Properties
-
+        
+        public bool DidFoundPhotos
+        {
+            get => _didFoundPhotos;
+            set => SetProperty(ref _didFoundPhotos, value);
+        }
         public bool IsVisible
         {
-            get
-            {
-                return _isVisible;
-            }
-            set
-            {
-                _isVisible = value;
-                OnPropertyChanged(nameof(IsVisible));
-            }
+            get => _isVisible;
+            set => SetProperty(ref _isVisible, value);
         }
-
         public ObservableCollection<string> Photos
         {
             get => _photos;
-            set
-            {
-                _photos = value;
-                OnPropertyChanged(nameof(Photos));
-            }
+            set => SetProperty(ref _photos, value);
         }
 
         private static ILogger Logger { get; } = Log.ForContext<QuickFlikrViewModel>();
@@ -94,6 +91,9 @@ namespace QuickFlikr.WinApp
 
         public QuickFlikrViewModel(IFlickrFeedService flickrFeedService)
         {
+            if (flickrFeedService == null)
+                throw new ArgumentNullException(string.Format(ExceptionRes.CanNotNull, nameof(IFlickrFeedService)));
+
             _flickerFeedService = flickrFeedService;
             _cancellationTokenSource = new CancellationTokenSource();
         }

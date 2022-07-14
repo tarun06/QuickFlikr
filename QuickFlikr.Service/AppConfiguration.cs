@@ -9,6 +9,9 @@ namespace QuickFlikr.Service
 
         public AppConfiguration(IConfiguration configuration)
         {
+            if (configuration == null)
+                throw new ArgumentNullException("Configuration can not be null");
+
             _configuration = configuration;
 
             FlikrServiceUrl = GetRequiredService("Endpoints:FlikrServiceUrl");

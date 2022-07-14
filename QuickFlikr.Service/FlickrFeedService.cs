@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using QuickFlikr.Model;
+using QuickFlikr.Resources;
 using QuickFlikr.Service.Contract;
 using Serilog;
 
@@ -11,6 +12,13 @@ namespace QuickFlikr.Service
 
         public FlickrFeedService(FlickrHttpClient flickrHttpClient, IAppConfiguration appConfiguration)
         {
+            if (flickrHttpClient == null)
+                throw new ArgumentNullException(string.Format(ExceptionRes.CanNotNull, nameof(FlickrHttpClient)));
+
+
+            if (appConfiguration == null)
+                throw new ArgumentNullException(string.Format(ExceptionRes.CanNotNull, nameof(IAppConfiguration)));
+
             _flickrHttpClient = flickrHttpClient;
             FlikrServiceUrl = appConfiguration.FlikrServiceUrl;
         }
@@ -19,7 +27,6 @@ namespace QuickFlikr.Service
 
         #region Private Feild
 
-        private const string DataFormat = "json";
         private readonly FlickrHttpClient _flickrHttpClient;
         private static ILogger Logger { get; } = Log.ForContext<FlickrFeedService>();
         private Uri FlikrServiceUrl { get; }
@@ -37,17 +44,22 @@ namespace QuickFlikr.Service
         {
             try
             {
-                var feeds = await GetFlikrsAsync(searchInput, DataFormat, cancellationToken);
+                var feeds = await GetFlikrsAsync(searchInput, Constants.JsonFormat, cancellationToken);
                 return feeds.Items;
             }
             catch (OperationCanceledException ex)
             {
-                Logger.Error("GetFlickrFeedAsync is cancelled by user");
+                Logger.Error(string.Format(ExceptionRes.CancelledByUser, nameof(GetFlickrFeedAsync)));
                 throw new TaskCanceledException(ex.Message);
+            }
+            catch (HttpRequestException http)
+            {
+                Logger.Error(string.Format(ExceptionRes.ErrorWhileConnecting, searchInput, http));
+                throw new Exception(http.Message);
             }
             catch (Exception ex)
             {
-                Logger.Error($"An exception has occured while executing GetFlickrFeedAsync :- {ex}.");
+                Logger.Error(string.Format(ExceptionRes.ExceptionOnExecuting, ex));
                 throw new Exception(ex.Message);
             }
         }
@@ -55,10 +67,10 @@ namespace QuickFlikr.Service
         private async Task<FlickrFeed> GetFlikrsAsync(string searchInput, string format = "json", CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(searchInput))
-                throw new ArgumentNullException("Search text can not be null or empty");
+                throw new ArgumentNullException(ExceptionRes.SearchTxtEmpty);
 
             if (string.IsNullOrEmpty(format))
-                throw new ArgumentNullException("format can not be null or empty");
+                throw new ArgumentNullException(ExceptionRes.FormatIsNull);
 
             Uri.TryCreate(FlikrServiceUrl + $"tags={searchInput}&format={format}&callback=?", UriKind.Absolute, out var uri);
 
@@ -67,7 +79,7 @@ namespace QuickFlikr.Service
             {
                 if (!response.IsSuccessStatusCode)
                 {
-                    Logger.Error("Failed to get the response from external service.");
+                    Logger.Error(ExceptionRes.FailedResponse);
                     return null;
                 }
 
