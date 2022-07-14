@@ -39,12 +39,15 @@
         <ItemsControl x:Name="ItemController" Grid.Row="1" ItemsSource="{Binding Photos}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Image Source="{Binding Converter={StaticResource stringToBitmpConverter}}" Width="100" Height="100" />
+                    <Image Source="{Binding Converter={StaticResource stringToBitmpConverter}}" 
+                           MinWidth="75" MaxWidth="200"
+                           MinHeight="75" MaxHeight="200" 
+                           Margin="2"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel Margin="2" />
+                    <WrapPanel Margin="2"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.Template>

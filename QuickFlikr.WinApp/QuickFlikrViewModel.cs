@@ -30,14 +30,21 @@ namespace QuickFlikr.WinApp
 
         #region Methods
 
-        private async Task SearchFeed(string searchText)
+        private async void SearchImage(string searchText)
         {
-            _cancellationTokenSource.Cancel();
-            _cancellationTokenSource = new CancellationTokenSource();
+            // clear photos from Ui
+            Photos.Clear();
+
+            if (string.IsNullOrEmpty(searchText))  return;
             try
             {
+                IsVisible = true;
+
+                // Cancellation is created to cancel old task if enter is pressed muliple times
+                _cancellationTokenSource.Cancel();
+                _cancellationTokenSource = new CancellationTokenSource();
+
                 var feedInfos = await _flickerFeedService.GetFlickrFeedAsync(searchText, CancellationToken.None);
-                Photos.Clear();
                 foreach (var item in feedInfos)
                 {
                     Photos.Add(item.Media.Path);
@@ -46,20 +53,6 @@ namespace QuickFlikr.WinApp
             catch (Exception argEx)
             {
                 Logger.Error(argEx.Message);
-            }
-        }
-
-        private async void SearchImage(string searchText)
-        {
-            if (string.IsNullOrEmpty(searchText))
-            {
-                Photos.Clear();
-                return;
-            }
-            try
-            {
-                IsVisible = true;
-                await SearchFeed(searchText);
             }
             finally
             {

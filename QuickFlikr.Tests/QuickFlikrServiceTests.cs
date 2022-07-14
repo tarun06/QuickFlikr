@@ -33,10 +33,12 @@ namespace QuickFlikr.Tests
             });
         }
 
-        [Fact]
-        public async void Should_Get_EqualFeed()
+        [Theory]
+        [InlineData("cat", 2)]
+        [InlineData("doll", 1)]
+        public async void Should_Get_EqualFeed(string searchText, int count)
         {
-            var feeds = DummyFeedGenerator.GeneratorFeedInfo().ToList();
+            var feeds = DummyFeedGenerator.GeneratorFeedInfo(searchText).ToList();
 
             // Arrange
             var flickrFeedService = new Mock<IFlickrFeedService>() { DefaultValue = DefaultValue.Mock };
@@ -44,10 +46,10 @@ namespace QuickFlikr.Tests
             flickrFeedService.Setup(x => x.GetFlickrFeedAsync(It.IsAny<string>(), CancellationToken.None)).ReturnsAsync(feeds);
 
             // Act
-            var result = await flickrFeedService.Object.GetFlickrFeedAsync("cat");
+            var result = await flickrFeedService.Object.GetFlickrFeedAsync(searchText);
 
             // Asserts
-            Assert.Equal(3, result.Count());
+            Assert.Equal(feeds.Count, count);
             Assert.Equal(feeds, result);
         }
 
@@ -66,7 +68,7 @@ namespace QuickFlikr.Tests
             vm.SearchCommand.Execute("cat");
 
             // Asserts
-            Assert.Equal(3, vm.Photos.Count());
+            Assert.Equal(feeds.Count, vm.Photos.Count());
             var isEqual = vm.Photos.ToList().SequenceEqual(feeds.Select(x => x.Media.Path));
             Assert.True(isEqual);
         }
