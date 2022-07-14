@@ -25,8 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickFlikr.Service.Contract
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{F5EAADAF-7D64-4E9F-B42B-12DD8BA21605}"
 	ProjectSection(SolutionItems) = preProject
-		C:\Users\tarun.kalal\Downloads\case study_PCG.docx = C:\Users\tarun.kalal\Downloads\case study_PCG.docx
-		C:\Users\tarun.kalal\Downloads\Quick Flickr Demo.pptx = C:\Users\tarun.kalal\Downloads\Quick Flickr Demo.pptx
+		Docs\case study_PCG.docx = Docs\case study_PCG.docx
+		Docs\Quick Flickr Demo.pptx = Docs\Quick Flickr Demo.pptx
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{2D2161FE-47D8-4828-B591-C185EDDAAD80}"
