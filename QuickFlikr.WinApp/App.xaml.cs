@@ -26,7 +26,7 @@ namespace QuickFlikr.WinApp
         {
             QuickFlikrView quickFlikrView = new QuickFlikrView();
             quickFlikrView.DataContext = new QuickFlikrViewModel(
-                ApplicationBootstrapper.ServiceLocator.GetService<IFlickrFeedService>());
+                ApplicationBootstrapper.ServiceLocator.GetService<IFlikrFeedService>());
             quickFlikrView.Show();
         }
     }

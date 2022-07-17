@@ -8,19 +8,19 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows.Input;
+using System.Threading.Tasks;
 
 namespace QuickFlikr.WinApp
 {
     public partial class QuickFlikrViewModel : ObservableObject
     {
         #region Private Field
-
         private CancellationTokenSource _cancellationTokenSource;
-        private IFlickrFeedService _flickerFeedService;
-        private bool _isVisible;
+        private TaskCompletionSource _taskCompletion;
+        private IFlikrFeedService _flikerFeedService;
+        private bool _inProgress;
+        private string _errorText = string.Empty;
         private ObservableCollection<string> _photos = new ObservableCollection<string>();
-        private bool _didFoundPhotos = false;
-
         #endregion Private Field
 
         #region Commands
@@ -34,23 +34,46 @@ namespace QuickFlikr.WinApp
 
         private async void SearchImage(string searchText)
         {
-            // clear photos from Ui
-            Photos.Clear();
+            ErrorText = string.IsNullOrEmpty(searchText) ? Global.NoInput : string.Empty;
+            if (string.IsNullOrEmpty(searchText))
+            {
+                Photos.Clear();
+                return;
+            }
 
-            if (string.IsNullOrEmpty(searchText)) return;
+            // A taskCompletion is monitor to wait for previous tasks
+            if (_taskCompletion is not null)
+            {
+                // Cancelled previous task if new request is raised.
+                _cancellationTokenSource.Cancel();
+
+                // Wait for previous task to complete
+                await _taskCompletion.Task;
+            }
+
+            _taskCompletion = new TaskCompletionSource();
+
             try
             {
-                IsVisible = true;
-                DidFoundPhotos = false;
-                // Cancellation is created to cancel old task if enter is pressed muliple times
-                _cancellationTokenSource.Cancel();
-                _cancellationTokenSource = new CancellationTokenSource();
+                Photos.Clear();
 
-                var feedInfos = await _flickerFeedService.GetFlickrFeedAsync(searchText, CancellationToken.None);
+                // Set CancellationSource
+                SetCancellation();
+
+                SetInProgress(true);
+
+                var feedInfos = await _flikerFeedService.GetFlikrFeedAsync(searchText, _cancellationTokenSource.Token);
+
                 foreach (var item in feedInfos)
                 {
+                    _cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     Photos.Add(item.Media.Path);
                 }
+            }
+            catch (OperationCanceledException Oce)
+            {
+                Photos.Clear();
+                Logger.Error(Oce.Message);
             }
             catch (Exception argEx)
             {
@@ -58,24 +81,42 @@ namespace QuickFlikr.WinApp
             }
             finally
             {
-                IsVisible = false;
-                DidFoundPhotos = !Photos.Any();
+                SetInProgress(false);
+                var isPreviousTaskCancelled = _cancellationTokenSource.IsCancellationRequested;
+
+                // Set error text if previous task is not cancelled and no photograph is received.
+                ErrorText = !Photos.Any() && !isPreviousTaskCancelled ? Global.NoPhotoFound : string.Empty;
+
+                // Set Completion to release
+                _taskCompletion?.TrySetResult();
             }
+        }
+
+        private void SetCancellation()
+        {
+            if (_cancellationTokenSource == null || _cancellationTokenSource.Token.IsCancellationRequested)
+                _cancellationTokenSource = new CancellationTokenSource();
+        }
+
+        private void SetInProgress(bool inProgress)
+        {
+            InProgress = inProgress;
         }
 
         #endregion Methods
 
         #region Properties
-        
-        public bool DidFoundPhotos
+
+        public string ErrorText
         {
-            get => _didFoundPhotos;
-            set => SetProperty(ref _didFoundPhotos, value);
+            get => _errorText;
+            set => SetProperty(ref _errorText, value);
         }
-        public bool IsVisible
+
+        public bool InProgress
         {
-            get => _isVisible;
-            set => SetProperty(ref _isVisible, value);
+            get => _inProgress;
+            set => SetProperty(ref _inProgress, value);
         }
         public ObservableCollection<string> Photos
         {
@@ -89,13 +130,12 @@ namespace QuickFlikr.WinApp
 
         #region Constructor
 
-        public QuickFlikrViewModel(IFlickrFeedService flickrFeedService)
+        public QuickFlikrViewModel(IFlikrFeedService flikrFeedService)
         {
-            if (flickrFeedService == null)
-                throw new ArgumentNullException(string.Format(ExceptionRes.CanNotNull, nameof(IFlickrFeedService)));
+            if (flikrFeedService == null)
+                throw new ArgumentNullException(string.Format(Global.CanNotNull, nameof(IFlikrFeedService)));
 
-            _flickerFeedService = flickrFeedService;
-            _cancellationTokenSource = new CancellationTokenSource();
+            _flikerFeedService = flikrFeedService;
         }
 
         #endregion Constructor

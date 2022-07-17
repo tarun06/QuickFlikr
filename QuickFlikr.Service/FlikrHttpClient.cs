@@ -2,11 +2,11 @@
 
 namespace QuickFlikr.Service
 {
-    public class FlickrHttpClient : HttpClient
+    public class FlikrHttpClient : HttpClient
     {
         #region Constructor
 
-        public FlickrHttpClient()
+        public FlikrHttpClient()
         {
             DefaultRequestHeaders.Accept.Clear();
             DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

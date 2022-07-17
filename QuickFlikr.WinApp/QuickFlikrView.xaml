@@ -11,6 +11,7 @@
     <Window.Resources>
         <converters:StringToBitmpConverter x:Key="stringToBitmpConverter" />
         <converters:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+        <converters:StringIsNullOrEmptyToBoolConverter x:Key="stringIsNullOrEmptyToBoolConverter"/>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="5" />
             <Setter Property="MinWidth" Value="250" />
@@ -24,31 +25,33 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" 
+        <Border  BorderBrush="DarkGray" BorderThickness="0 0 0 1" Grid.Row="0" >
+            <StackPanel Orientation="Horizontal"
                     VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBox x:Name="SearchTxtBox" Height="30"/>
-            <Button IsDefault="True"
+                <TextBox x:Name="SearchTxtBox" Height="30"/>
+                <Button IsDefault="True"
                     VerticalAlignment="Center" Content="&#x1F50E;" HorizontalAlignment="Center"
                     Command="{Binding SearchCommand}" CommandParameter="{Binding ElementName=SearchTxtBox, Path=Text}"/>
-        </StackPanel>
+            </StackPanel>
+        </Border>
 
         <ProgressBar Grid.Row="1" 
-                     Visibility="{Binding IsVisible, Converter={StaticResource boolToVisibilityConverter}}" 
+                     Visibility="{Binding InProgress, Converter={StaticResource boolToVisibilityConverter}}" 
                      Width="250" Height="10" IsIndeterminate="True"/>
 
         <TextBlock Grid.Row="1" 
                    VerticalAlignment="Center" HorizontalAlignment="Center"
                    FontSize="25" FontWeight="Bold"
-                   Text="Oops... No photo found." 
-                   Visibility="{Binding DidFoundPhotos, Converter={StaticResource boolToVisibilityConverter}}"/>
-        
+                   Text="{Binding ErrorText}" 
+                   Visibility="{Binding ErrorText, Converter={StaticResource stringIsNullOrEmptyToBoolConverter}}"/>
+
         <ItemsControl x:Name="ItemController" Grid.Row="1" ItemsSource="{Binding Photos}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Image Source="{Binding Converter={StaticResource stringToBitmpConverter}}" 
-                           MinWidth="75" MaxWidth="200"
-                           MinHeight="75" MaxHeight="200" 
-                           Margin="2"/>
+                    <Border Width="125"
+                           Height="125" Margin="2">
+                        <Image Source="{Binding Converter={StaticResource stringToBitmpConverter}}" />
+                    </Border>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>

@@ -3,7 +3,7 @@
 namespace QuickFlikr.Model
 {
     [DataContract()]
-    public class FlickrFeed
+    public class FlikrFeed
     {
         [DataMember(Name = "description", IsRequired = true)]
         public string Description { get; set; }

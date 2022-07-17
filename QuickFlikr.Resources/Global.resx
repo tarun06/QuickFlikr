@@ -117,25 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppDomainException" xml:space="preserve">
-    <value>AppDomain.CurrentDomain.UnhandledException</value>
+  <data name="AppWillDie" xml:space="preserve">
+    <value>Normally the app would die now. Should we let it die?</value>
   </data>
-  <data name="DispatcherUnhandledException" xml:space="preserve">
-    <value>Dispatcher.UnhandledException</value>
+  <data name="CancelledByUser" xml:space="preserve">
+    <value>{0} is cancelled by user</value>
   </data>
-  <data name="ErrorWhileConnecting" xml:space="preserve">
-    <value>Error while downloading feed from server for {0}, Exception : {1}</value>
+  <data name="CanNotNull" xml:space="preserve">
+    <value>{0} can not be null</value>
   </data>
-  <data name="ExceptionOccurred" xml:space="preserve">
-    <value>The following exception occurred:\n\n {0}</value>
+  <data name="FailedResponse" xml:space="preserve">
+    <value>Failed to get the response from external service.</value>
   </data>
-  <data name="ExceptionOnExecuting" xml:space="preserve">
-    <value>An exception has occured while executing : {0}</value>
+  <data name="FormatIsNull" xml:space="preserve">
+    <value>Format can not be null or empty</value>
   </data>
-  <data name="TaskUnobservedException" xml:space="preserve">
-    <value>TaskScheduler.UnobservedTaskException</value>
+  <data name="NoInput" xml:space="preserve">
+    <value>No input is provided.</value>
   </data>
-  <data name="UnExpectedError" xml:space="preserve">
-    <value>Unexpected Error Occurred: {0}</value>
+  <data name="NoPhotoFound" xml:space="preserve">
+    <value>Oops...No photo found.</value>
+  </data>
+  <data name="SearchTxtEmpty" xml:space="preserve">
+    <value>Search text can not be null or empty</value>
   </data>
 </root>

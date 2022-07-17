@@ -35,7 +35,7 @@ namespace QuickFlikr.WinApp
 
             if (promptUserForShutdown)
             {
-                messageBoxMessage += ExceptionRes.AppWillDie;
+                messageBoxMessage += Global.AppWillDie;
                 messageBoxButtons = MessageBoxButton.YesNo;
             }
 

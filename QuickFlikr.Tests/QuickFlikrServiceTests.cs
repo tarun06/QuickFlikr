@@ -17,12 +17,12 @@ namespace QuickFlikr.Tests
         {
             // Arrange
             var cts = new CancellationTokenSource();
-            var flickrFeedService = new Mock<IFlickrFeedService>() { DefaultValue = DefaultValue.Mock };
-            flickrFeedService.SetupAllProperties();
-            flickrFeedService.Setup(x => x.GetFlickrFeedAsync(It.IsAny<string>(), cts.Token)).ReturnsAsync(Array.Empty<FeedInfo>());
+            var flikrFeedService = new Mock<IFlikrFeedService>() { DefaultValue = DefaultValue.Mock };
+            flikrFeedService.SetupAllProperties();
+            flikrFeedService.Setup(x => x.GetFlikrFeedAsync(It.IsAny<string>(), cts.Token)).ReturnsAsync(Array.Empty<FeedInfo>());
 
             // Act
-            var vm = new QuickFlikrViewModel(flickrFeedService.Object);
+            var vm = new QuickFlikrViewModel(flikrFeedService.Object);
             cts.Cancel();
 
             // Asserts
@@ -41,12 +41,12 @@ namespace QuickFlikr.Tests
             var feeds = DummyFeedGenerator.GeneratorFeedInfo(searchText).ToList();
 
             // Arrange
-            var flickrFeedService = new Mock<IFlickrFeedService>() { DefaultValue = DefaultValue.Mock };
-            flickrFeedService.SetupAllProperties();
-            flickrFeedService.Setup(x => x.GetFlickrFeedAsync(It.IsAny<string>(), CancellationToken.None)).ReturnsAsync(feeds);
+            var flikrFeedService = new Mock<IFlikrFeedService>() { DefaultValue = DefaultValue.Mock };
+            flikrFeedService.SetupAllProperties();
+            flikrFeedService.Setup(x => x.GetFlikrFeedAsync(It.IsAny<string>(), CancellationToken.None)).ReturnsAsync(feeds);
 
             // Act
-            var result = await flickrFeedService.Object.GetFlickrFeedAsync(searchText);
+            var result = await flikrFeedService.Object.GetFlikrFeedAsync(searchText);
 
             // Asserts
             Assert.Equal(feeds.Count, count);
@@ -59,12 +59,12 @@ namespace QuickFlikr.Tests
             var feeds = DummyFeedGenerator.GeneratorFeedInfo().ToList();
 
             // Arrange
-            var flickrFeedService = new Mock<IFlickrFeedService>() { DefaultValue = DefaultValue.Mock };
-            flickrFeedService.SetupAllProperties();
-            flickrFeedService.Setup(x => x.GetFlickrFeedAsync(It.IsAny<string>(), CancellationToken.None)).ReturnsAsync(feeds);
+            var flikrFeedService = new Mock<IFlikrFeedService>() { DefaultValue = DefaultValue.Mock };
+            flikrFeedService.SetupAllProperties();
+            flikrFeedService.Setup(x => x.GetFlikrFeedAsync(It.IsAny<string>(), CancellationToken.None)).ReturnsAsync(feeds);
 
             // Act
-            var vm = new QuickFlikrViewModel(flickrFeedService.Object);
+            var vm = new QuickFlikrViewModel(flikrFeedService.Object);
             vm.SearchCommand.Execute("cat");
 
             // Asserts
@@ -77,12 +77,12 @@ namespace QuickFlikr.Tests
         public void Should_Throw_ArgumentNullException()
         {
             // Arrange
-            var flickrFeedService = new Mock<IFlickrFeedService>() { DefaultValue = DefaultValue.Mock };
-            flickrFeedService.SetupAllProperties();
-            flickrFeedService.Setup(x => x.GetFlickrFeedAsync(It.IsAny<string>(), CancellationToken.None)).ReturnsAsync(Array.Empty<FeedInfo>());
+            var flikrFeedService = new Mock<IFlikrFeedService>() { DefaultValue = DefaultValue.Mock };
+            flikrFeedService.SetupAllProperties();
+            flikrFeedService.Setup(x => x.GetFlikrFeedAsync(It.IsAny<string>(), CancellationToken.None)).ReturnsAsync(Array.Empty<FeedInfo>());
 
             // Act
-            var vm = new QuickFlikrViewModel(flickrFeedService.Object);
+            var vm = new QuickFlikrViewModel(flikrFeedService.Object);
 
             // Asserts
             Assert.ThrowsAsync<ArgumentNullException>(() =>

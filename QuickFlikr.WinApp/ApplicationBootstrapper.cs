@@ -56,11 +56,11 @@ namespace QuickFlikr.WinApp
 
         public static void RegisterServices()
         {
-            ServiceLocator.RegisterSingleton<IFlickrFeedService, FlickrFeedService>();
+            ServiceLocator.RegisterSingleton<IFlikrFeedService, FlikrFeedService>();
             ServiceLocator.RegisterSingleton<ISystemFolders, SystemFolders>();
             ServiceLocator.RegisterSingleton(BuildConfiguration);
             ServiceLocator.RegisterSingleton<IAppConfiguration, AppConfiguration>();
-            ServiceLocator.Register<FlickrHttpClient>();
+            ServiceLocator.Register<FlikrHttpClient>();
         }
 
         #endregion Methods
